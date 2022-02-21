@@ -21,13 +21,19 @@
     <!--
     -- Step: Reference the gettingstarted.css file
     -->
-
+    <link rel="stylesheet" href="css/gettingstarted.css">
 
     <script>
         /*
          *  Step: Require the esri/map module and the dojo/domReady! plugin
          */
-
+        require(["esri/map","dojo/domReady!"], function(Map) { 
+            var myMap = new Map("divMap", {
+                basemap: "topo",
+                center: [-122.45,37.75],
+                zoom: 12
+                });
+        });
 
     </script>
 </head>
@@ -36,7 +42,6 @@
 <!--
 -- Step: Create a <div> in which the Map will display
 -->
-Hello world!
-
+<div id="divMap"></div>
 </body>
 </html>

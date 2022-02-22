@@ -3,7 +3,7 @@ var mapMain;
 // @formatter:off
 require([
         "esri/map",
-
+        "esri/dijit/Search",
         "dojo/_base/Color",
         "dojo/_base/array",
 
@@ -14,7 +14,7 @@ require([
 
         "dijit/layout/BorderContainer",
         "dijit/layout/ContentPane"],
-    function (Map, 
+    function (Map, Search,
               Color, array,
               dom, on, parser, ready,
               BorderContainer, ContentPane) {
@@ -36,6 +36,10 @@ require([
             /*
              * Step: Add the Search widget
              */
-
+            var dijitSearch = new Search({
+                map: mapMain,
+                autoComplete: true
+              },"divSearch");
+            dijitSearch.startup();
             });
     });

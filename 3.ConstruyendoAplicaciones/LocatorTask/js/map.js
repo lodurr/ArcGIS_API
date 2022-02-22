@@ -4,7 +4,7 @@ var mapMain;
 require([
         "esri/map",
         "esri/graphic",
-
+        "esri/tasks/locator",
         "esri/symbols/SimpleMarkerSymbol",
         "esri/symbols/TextSymbol",
         "esri/symbols/Font",
@@ -19,7 +19,7 @@ require([
 
         "dijit/layout/BorderContainer",
         "dijit/layout/ContentPane"],
-    function (Map, Graphic,
+    function (Map, Graphic,Locator,
               SimpleMarkerSymbol, TextSymbol, Font,
               Color, array,
               dom, on, parser, ready,
@@ -44,17 +44,17 @@ require([
             /*
              * Step: Construct and bind the Locator task
              */
-
+            taskLocator = new Locator("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
 
             /*
              * Step: Wire the button's onclick event handler
              */
-
+            on(dom.byId("btnLocate"),"click", doAddressToLocations);
 
             /*
              * Step: Wire the task's completion event handler
              */
-
+            taskLocator.on("address-to-locations-complete", showResults)
 
             function doAddressToLocations() {
                 mapMain.graphics.clear();
@@ -62,14 +62,19 @@ require([
                 /*
                  * Step: Complete the Locator input parameters
                  */
-                var objAddress = {}
-                var params = {}
+                var objAddress = {
+                    "SingleLine": dom.byId("taAddress").value
+                };
+                var params = {
+                    address: objAddress,
+                    outFields :["Loc_name"]
+                }
 
 
                 /*
                  * Step: Execute the task
                  */
-
+                taskLocator.addressToLocations(params);
 
             }
 
@@ -97,12 +102,13 @@ require([
                         /*
                          * Step: Retrieve the result's geometry
                          */
-
+                        geometryLocation =candidate.location;
 
                         /*
                          * Step: Display the geocoded location on the map
                          */
-
+                        var graphicResult = new Graphic(geometryLocation,symbolMarker,attributesCandidate);
+                        mapMain.graphics.add(graphicResult);
 
                         // display the candidate's address as text
                         var sAddress = candidate.address;

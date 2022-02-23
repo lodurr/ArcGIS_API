@@ -81,14 +81,14 @@ require([
             });
             lyrUSA.setVisibleLayers([0, 1, 3]);
 
-
+            var outFieldsQuakes= ["EQUID", "UTC_DATETIME", "MAGNITUDE", "PLACE"];
 
             // Construct the Quakes layer
             var lyrQuakes = new FeatureLayer(sUrlQuakesLayer, {
                 /*
                  * Step: Set the quakes layer output fields
                  */
-
+                    outFields: outFieldsQuakes
 
             });
          //   lyrQuakes.setDefinitionExpression("MAGNITUDE >= 2.0");
@@ -157,18 +157,19 @@ require([
                 /*
                  * Step: Initialize the query
                  */
-
-
+                var queryQuakes = new Query();
+                queryQuakes.geometry = geometryInput;
+                
 
                 /*
                  * Step: Wire the layer's selection complete event
                  */
-
+                lyrQuakes.on("selection-complete",populateGrid);
 
                 /*
                  * Step: Perform the selection
                  */
-
+                lyrQuakes.selectFeatures(queryQuakes,FeatureLayer.SELECTION_NEW);
 
             }
 
@@ -183,7 +184,11 @@ require([
                         /*
                          * Step: Reference the attribute field values
                          */
-
+                        "EQID": feature.attributes[outFieldsQuakes[0]],
+                        "UTC_DATETIME": feature.attributes[outFieldsQuakes[1]],
+                        "MAGNITUDE": feature.attributes[outFieldsQuakes[2]],
+                        "PLACE": feature.attributes[outFieldsQuakes[3]],
+              
                     }
                 });
 

@@ -51,7 +51,7 @@ require([
             var gridQuakes = new (declare([Grid, Selection]))({
                 bufferRows: Infinity,
                 columns: {
-                    EQID: "ID",
+                    EQUID: "ID",
                     UTC_DATETIME: {
                         "label": "Date/Time",
                         "formatter": function (dtQuake) {

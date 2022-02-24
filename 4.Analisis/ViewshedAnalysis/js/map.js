@@ -2,31 +2,66 @@ var mapMain;
 
 // @formatter:off
 require([
-        "esri/map",
-        "esri/toolbars/draw",
-        "esri/graphic",
-        "esri/graphicsUtils",
-        "esri/symbols/SimpleMarkerSymbol",
-        "esri/symbols/SimpleLineSymbol",
-        "esri/symbols/SimpleFillSymbol",
-        "esri/Color",
-        "esri/tasks/Geoprocessor",
-        "esri/tasks/FeatureSet",
-        "esri/tasks/LinearUnit",
+    "esri/map",
+    "esri/toolbars/draw",
+    "esri/graphic",
+    "esri/graphicsUtils",
+    "esri/symbols/SimpleMarkerSymbol",
+    "esri/symbols/SimpleLineSymbol",
+    "esri/symbols/SimpleFillSymbol",
+    "esri/Color",
+    "esri/tasks/Geoprocessor",
+    "esri/tasks/FeatureSet",
+    "esri/tasks/LinearUnit",
+    "esri/tasks/PrintTemplate",
+    "esri/dijit/Print",
 
-        "dojo/ready",
-        "dojo/parser",
-        "dojo/on",
-        "dojo/_base/array"],
-    function (Map, Draw, Graphic, graphicsUtils, SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, Color,Geoprocessor,FeatureSet, LinearUnit,
-              ready, parser, on, array) {
-// @formatter:on
+    "dojo/ready",
+    "dojo/parser",
+    "dojo/on",
+    "dojo/_base/array"],
+    function (Map, Draw, Graphic, graphicsUtils, SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, Color, Geoprocessor, FeatureSet, LinearUnit, PrintTemplate,Print,
+        ready, parser, on, array) {
+        // @formatter:on
 
         // Wait until DOM is ready *and* all outstanding require() calls have been resolved
         ready(function () {
 
             // Parse DOM nodes decorated with the data-dojo-type attribute
             parser.parse();
+
+            // create an array of JSON objects that will be used to create print templates
+            var myLayouts = [{
+                "name": "Letter ANSI A Landscape",
+                "label": "Landscape (PDF)",
+                "format": "pdf",
+                "options": {
+                    "legendLayers": [], // empty array means no legend
+                    "scalebarUnit": "Miles",
+                    "titleText": "Landscape PDF"
+                }
+            }, {
+                "name": "Letter ANSI A Portrait",
+                "label": "Portrait (JPG)",
+                "format": "jpg",
+                "options": {
+                    "legendLayers": [],
+                    "scaleBarUnit": "Miles",
+                    "titleText": "Portrait JPG"
+                }
+            }];
+
+            // create the print templates, could also use dojo.map
+            var myTemplates = [];
+            dojo.forEach(myLayouts, function (lo) {
+                var t = new PrintTemplate();
+                t.layout = lo.name;
+                t.label = lo.label;
+                t.format = lo.format;
+                t.layoutOptions = lo.options;
+                myTemplates.push(t);
+            });
+
 
             // Create the map
             mapMain = new Map("divMap", {
@@ -45,6 +80,15 @@ require([
                  * Step: Set the spatial reference for output geometries
                  */
                 gpViewshed.outSpatialReference = mapMain.spatialReference;
+                /*
+                * Step: Add a print Widget that uses the prepared templates
+                */
+                var widgetPrint = new Print({
+                    map: mapMain,
+                    url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task",
+                    templates: myTemplates
+                },divPrint);
+                widgetPrint.startup();
             });
 
             // Collect the input observation point
@@ -91,7 +135,7 @@ require([
                 /*
                  * Step: Wire and execute the Geoprocessor
                  */
-                gpViewshed.on("execute-complete",displayViewshed );
+                gpViewshed.on("execute-complete", displayViewshed);
                 gpViewshed.execute(gpParams);
 
             }
@@ -106,7 +150,7 @@ require([
                 /*
                  * Step: Extract the array of features from the results
                  */
-                var pvResult = results.results [0];
+                var pvResult = results.results[0];
                 var gpFeatureRecordSetLayer = pvResult.value;
                 var arrayFeatures = gpFeatureRecordSetLayer.features;
 

@@ -10,3 +10,9 @@ body {
     overflow: hidden;
     font-family: "Trebuchet MS";
 }
+
+#divPrint {
+    position: absolute;
+    left: 9px;
+    top: 90px;
+    }

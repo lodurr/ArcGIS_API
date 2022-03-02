@@ -138,7 +138,7 @@ require([
         }
 
         /*
-        * Scalenbar
+        * Scalebar
         */
         var scalebar = new Scalebar({
             map: mapMain,
@@ -147,6 +147,7 @@ require([
         });
         scalebar.show();
 
+        
         /*
         * Load Map and Legend
         */

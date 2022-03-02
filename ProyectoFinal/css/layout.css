@@ -5,6 +5,14 @@
     background-color:white; overflow:hidden; 
     font-family: "Trebuchet MS"; 
   }
+  #search {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    top: 10px;
+    right: 10px;
+  }
+  
     #mapMain {
     margin: 5px;
     border:solid 4px #224a54;
@@ -92,3 +100,5 @@
     transform: rotate(-45deg);
     -webkit-transform: rotate(-45deg);
   }
+
+  

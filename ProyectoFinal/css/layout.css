@@ -1,57 +1,94 @@
-      html, body { 
-        height: 100%; width: 100%; margin: 0; 
-      } 
-      body{
-        background-color:white; overflow:hidden; 
-        font-family: "Trebuchet MS"; 
-      }
-       #map {
-       margin: 5px;
-        border:solid 4px #224a54;
-        -moz-border-radius: 4px;
-        
-      }
-      #map_root{
-        width: 100% !important;
-        height: 100% !important;
-      }
-      #header {
-        background-image: url(../images/banner.jpg); background-repeat: repeat-x;
-        margin: 2px;
-        border: solid 4px #224a54;
-        color:white; font-size:18pt; 
-        text-align:left; font-weight:bold; height:70px;
-      }
-      #subheader {
-        font-size:small;
-        color:white;
-        padding-left:20px;
-      }
-      #rightPane{
-        background-color:white;
-        color:#3f3f3f;
-        border: solid 2px #224a54;
-        width:20%;
-      }
-      #leftPane{
-        margin: 5px;
-        padding:2px;
-        background-color:white;
-        color:#3f3f3f;
-        border: solid 2px #224a54;
-        width:20%;
-     }
+  html, body { 
+    height: 100%; width: 100%; margin: 0; 
+  } 
+  body{
+    background-color:white; overflow:hidden; 
+    font-family: "Trebuchet MS"; 
+  }
+    #mapMain {
+    margin: 5px;
+    border:solid 4px #224a54;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+  }
+  #map_root{
+    width: 100% !important;
+    height: 100% !important;
+  }
+  #header {
+    background-image: url(../images/banner.jpg); background-repeat: repeat-x;
+    margin: 2px;
+    border: solid 4px #224a54;
+    color:white; font-size:18pt; 
+    text-align:left; font-weight:bold; height:70px;
+  }
+  #subheader {
+    font-size:small;
+    color:white;
+    padding-left:20px;
+  }
+  #rightPane{
+    background-color:white;
+    color:#3f3f3f;
+    border: solid 2px #224a54;
+    width:20%;
+  }
+  #leftPane{
+    margin: 5px;
+    padding:2px;
+    background-color:white;
+    color:#3f3f3f;
+    border: solid 2px #224a54;
+    width:20%;
+  }
+  #footer {
+    margin: 2px;
+    border: solid 2px #224a54;
+    background-color:#ecefe4;color:#3f3f3f;
+    font-size:10pt; text-align:center; height:40px;
+  }
+  .dijitTabInnerDiv{
+    background-color:#ecefe4;
+  }
+  #tabs{
+    padding:5px;
+  }
+  #basemapGallery {
+    display: none;
+  }
+  .esriScalebar{
+    padding-right: 80px;    
+  }
 
-      #footer {
-        margin: 2px;
-        border: solid 2px #224a54;
-        background-color:#ecefe4;color:#3f3f3f;
-       font-size:10pt; text-align:center; height:40px;
-      }
-      .dijitTabInnerDiv{
-        background-color:#ecefe4;
-      }
-      #tabs{
-        padding:5px;
-      }
-     
+  /* Code outside ESRI */
+  .collapsible {
+    background-color: #f8f8f8;
+    color: #494949;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+  }
+  .active, .collapsible:hover {
+    background-color: #696868;
+    color: white;
+  }
+  .content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #b4b0b0;
+  }
+  .arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+  }
+  .right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+  }

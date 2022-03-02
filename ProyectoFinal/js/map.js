@@ -14,8 +14,11 @@ require([
     "esri/map",
     "esri/layers/ArcGISDynamicMapServiceLayer",
     "esri/geometry/Extent",
-    "esri/arcgis/utils",
     "esri/dijit/Legend",
+    "esri/dijit/Search",
+    "esri/dijit/BasemapGallery",
+    "esri/dijit/OverviewMap",
+    "esri/dijit/Scalebar",
 
     "dojo/on",
 
@@ -28,27 +31,26 @@ require([
         Map,
         ArcGISDynamicMapServiceLayer,
         Extent,
-        arcgisUtils,
         Legend,
+        Search,
+        BasemapGallery,
+        OverviewMap,
+        Scalebar,
         on
 
     ) {
 
         var sUrlUSAService = "http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/";
-
+        /*
+        * Extent
+        */
         var extentInitial = new Extent({
-            /*"xmin": -178.217598382,
-            "ymin": 18.921786345999976,
-            "xmax": -66.96927110500002,
-            "ymax": 71.40623554799998,*/
             "xmin": -130.22,
-            "ymin": 18.92,
+            "ymin": 70.92,
             "xmax": -25.96,
             "ymax": 76.5,
             "spatialReference": { "wkid": 4326 }
         });
-
-
 
         on(dojo.byId("pintaYQuery"), "click", fPintaYQuery);
         on(dojo.byId("progButtonNode"), "click", fQueryEstados);
@@ -61,13 +63,20 @@ require([
             alert("Evento del botón Ir a estado");
         }
 
+        /*
+        * MapMain
+        */
+        
         mapMain = new Map("map", {
             basemap: "topo",
             extent: extentInitial,
             zoom: 3,
             sliderStyle: "small"
         });
-
+        
+        /*
+        * Mapserver
+        */
         var lyrUSA = new ArcGISDynamicMapServiceLayer(sUrlUSAService, {
             opacity: 0.5
         });
@@ -79,12 +88,69 @@ require([
 
         mapMain.addLayers([lyrUSA]);
 
-      
-
-        mapMain.on("load", function (evt) {
         /*
-        * Step: update the Legend
+        * Search widget
         */
+        var dijitSearch = new Search({
+            map: mapMain,
+            autoComplete: true
+        }, "divSearch");
+        dijitSearch.startup();
+
+        /*
+        * BaseMapGallery
+        */
+        var basemapGallery = new BasemapGallery({
+            showArcGISBasemaps: true,
+            map: mapMain
+        }, "basemapGallery");
+        basemapGallery.startup();
+       
+        /*
+        * Overview Map
+        */
+        var overviewMapDijit = new OverviewMap({
+            map: mapMain,
+            attachTo: "bottom-left",
+            height: 250,
+            width: 250,
+            visible: true
+        });
+        overviewMapDijit.startup();
+
+        /*
+        * Collapse button GalleryMap
+        */
+
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+
+        /*
+        * Scalenbar
+        */
+        var scalebar = new Scalebar({
+            map: mapMain,
+            attachTo: "bottom-right"
+        
+        });
+        scalebar.show();
+
+        /*
+        * Load Map and Legend
+        */
+        mapMain.on("load", function (evt) {
             mapMain.resize();
             mapMain.reposition();
             var dijitLegend = new Legend({

@@ -64,15 +64,14 @@ require([
         * PopUp
         */
         var popup = new Popup({
-            titleInBody: false
         }, domConstruct.create("div"));
 
         var template = new PopupTemplate({
-            title: "{STATE_NAME}",
-            description: "{STATE_NAME}:  {POP2000} {POP00_SQMI} {area} of starters finished",
+            title: "Estado de {STATE_NAME}, {STATE_ABBR}",
             fieldInfos: [
-                { fieldName: "POP2000", visible: true, label: "Average Household Size: " },
-                { fieldName: "STATE_NAME", visible: true, label: "State: " }
+                { fieldName: "POP2000", visible: true, label: "Población año 2000: " },
+                { fieldName: "POP00_SQMI",visible: true, label: "Población por sqmi: " },
+                { fieldName: "ss6.gdb.States.area", visible: true, label: "Area por sqmi: " }
               ]
         });
 

@@ -1,83 +1,81 @@
-
 <html>
-    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-      
-      <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
-      <!-- 
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <!-- 
     ArcGIS API for JavaScript, https://js.arcgis.com
     For more information about the popup_chart sample, read the original sample description at developers.arcgis.com.
     https://developers.arcgis.com/javascript/3/popup_chart/index.html  
     -->
-    <title>Popup</title>
-  
-      <link rel="stylesheet" href="https://js.arcgis.com/3.39/dijit/themes/claro/claro.css">
-      <link rel="stylesheet" href="https://js.arcgis.com/3.39/esri/css/esri.css">
-      <style>
-        html, body, #map {
-          padding: 0;
-          margin: 0;
-          height: 100%;
-        }
-    
-      </style>
-  
-      <script src="https://js.arcgis.com/3.39/"></script>
-      <script>
-        var map;
-        require([
-          "esri/map",
-          "esri/dijit/Popup", "esri/dijit/PopupTemplate",
-          "esri/layers/FeatureLayer", 
-         "dojo/dom-construct", "dojo/on",
-          
-          "dojo/domReady!"
-        ], function(
-          Map,
-          Popup, PopupTemplate,
-          FeatureLayer,
-          
-          domConstruct, on,
-        ) {
-          //The popup is the default info window so you only need to create the popup and 
-          //assign it to the map if you want to change default properties. Here we are 
-          //noting that the specified title content should display in the header bar 
-          //and providing our own selection symbol for polygons.
-          var popup = new Popup({
-              titleInBody: false
-          }, domConstruct.create("div"));
-          //Add the dark theme which is customized further in the <style> tag at the top of this page
-  
-          map = new Map("map", {
-            basemap: "gray-vector",
-            center: [-98.57, 39.82],
-            zoom: 3,
-            infoWindow: popup
-          });
-  
-          var template = new PopupTemplate({
-            title: "{STATE_NAME}",
-            description: "{STATE_NAME}:  {POP2000} of starters finished",
-            fieldInfos: [{ //define field infos so we can specify an alias
-            fieldName: "POP2000",
-            label: "Entrants"
-          }
-              ]
-          });
-  
-          var featureLayer = new FeatureLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/2",{
-            mode: FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            infoTemplate: template
-          });
-          map.addLayer(featureLayer);
+  <title>Popup</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/3.39/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/3.39/esri/css/esri.css">
+  <style>
+    html,
+    body,
+    #map {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+    }
+  </style>
+
+  <script src="https://js.arcgis.com/3.39/"></script>
+  <script>
+    var map;
+    require([
+      "esri/map",
+      "esri/dijit/Popup", "esri/dijit/PopupTemplate",
+      "esri/layers/FeatureLayer",
+      "dojo/dom-construct", "dojo/on",
+
+      "dojo/domReady!"
+    ], function (
+      Map,
+      Popup, PopupTemplate,
+      FeatureLayer,
+
+      domConstruct, on,
+    ) {
+      //The popup is the default info window so you only need to create the popup and 
+      //assign it to the map if you want to change default properties. Here we are 
+      //noting that the specified title content should display in the header bar 
+      //and providing our own selection symbol for polygons.
+      var popup = new Popup({
+      }, domConstruct.create("div"));
+      //Add the dark theme which is customized further in the <style> tag at the top of this page
+
+      map = new Map("map", {
+        basemap: "gray-vector",
+        center: [-98.57, 39.82],
+        zoom: 3,
+        infoWindow: popup
+      });
+
+      var template = new PopupTemplate({
+        title: "Estado de {STATE_NAME}, {STATE_ABBR}",
+        fieldInfos: [
+          { fieldName: "POP2000", visible: true, label: "Población año 2000: " },
+          { fieldName: "POP00_SQMI", visible: true, label: "Población por sqmi: " },
+          { fieldName: "ss6.gdb.States.area", visible: true, label: "Area por sqmi: " }
+        ]      
+    });
+
+    var featureLayer = new FeatureLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/2", {
+      mode: FeatureLayer.MODE_ONDEMAND,
+      outFields: ["*"],
+      infoTemplate: template
+    });
+    map.addLayer(featureLayer);
         });
-      </script>
-    </head>
-    
-    <body class="claro">
-      <div id="map"></div>
-    </body>
-  
-  </html>
-  
+  </script>
+</head>
+
+<body class="claro">
+  <div id="map"></div>
+</body>
+
+</html>

@@ -19,8 +19,12 @@ require([
     "esri/dijit/BasemapGallery",
     "esri/dijit/OverviewMap",
     "esri/dijit/Scalebar",
+    "esri/dijit/Popup",
+    "esri/dijit/PopupTemplate",
+    "esri/layers/FeatureLayer",
 
     "dojo/on",
+    "dojo/dom-construct",
 
     "dijit/TitlePane",
     "dijit/layout/TabContainer",
@@ -36,7 +40,12 @@ require([
         BasemapGallery,
         OverviewMap,
         Scalebar,
-        on
+        Popup,
+        PopupTemplate,
+        FeatureLayer,
+
+        on,
+        domConstruct
 
     ) {
 
@@ -50,6 +59,21 @@ require([
             "xmax": -25.96,
             "ymax": 76.5,
             "spatialReference": { "wkid": 4326 }
+        });
+        /*
+        * PopUp
+        */
+        var popup = new Popup({
+            titleInBody: false
+        }, domConstruct.create("div"));
+
+        var template = new PopupTemplate({
+            title: "{STATE_NAME}",
+            description: "{STATE_NAME}:  {POP2000} {POP00_SQMI} {area} of starters finished",
+            fieldInfos: [
+                { fieldName: "POP2000", visible: true, label: "Average Household Size: " },
+                { fieldName: "STATE_NAME", visible: true, label: "State: " }
+              ]
         });
 
         on(dojo.byId("pintaYQuery"), "click", fPintaYQuery);
@@ -66,27 +90,34 @@ require([
         /*
         * MapMain
         */
-        
         mapMain = new Map("map", {
             basemap: "topo",
             extent: extentInitial,
             zoom: 3,
-            sliderStyle: "small"
+            sliderStyle: "small",
+            infoWindow: popup
         });
-        
+
         /*
         * Mapserver
         */
         var lyrUSA = new ArcGISDynamicMapServiceLayer(sUrlUSAService, {
             opacity: 0.5
         });
-        /* lyrUSA.setVisibleLayers([0, 1, 2, 3]);
-            0 Cities
+        lyrUSA.setVisibleLayers([0, 1, 3]);
+        /*    0 Cities
             1 Highways
             2 States
             3 Counties */
 
-        mapMain.addLayers([lyrUSA]);
+        var featureLayer = new FeatureLayer(sUrlUSAService + "/2", {
+            mode: FeatureLayer.MODE_ONDEMAND,
+            outFields: ["*"],
+            infoTemplate: template
+        });
+
+
+        mapMain.addLayers([lyrUSA, featureLayer]);
 
         /*
         * Search widget
@@ -105,7 +136,7 @@ require([
             map: mapMain
         }, "basemapGallery");
         basemapGallery.startup();
-       
+
         /*
         * Overview Map
         */
@@ -114,7 +145,7 @@ require([
             attachTo: "bottom-left",
             height: 250,
             width: 250,
-            visible: true
+            visible: false
         });
         overviewMapDijit.startup();
 
@@ -143,11 +174,11 @@ require([
         var scalebar = new Scalebar({
             map: mapMain,
             attachTo: "bottom-right"
-        
+
         });
         scalebar.show();
 
-        
+
         /*
         * Load Map and Legend
         */

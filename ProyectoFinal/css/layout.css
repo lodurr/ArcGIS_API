@@ -12,8 +12,7 @@
     top: 10px;
     right: 10px;
   }
-  
-    #mapMain {
+  #mapMain {
     margin: 5px;
     border:solid 4px #224a54;
     border-radius: 4px;
@@ -83,12 +82,6 @@
   .active, .collapsible:hover {
     background-color: #696868;
     color: white;
-  }
-  .content {
-    padding: 0 18px;
-    display: none;
-    overflow: hidden;
-    background-color: #b4b0b0;
   }
   .arrow {
     border: solid black;

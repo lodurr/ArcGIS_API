@@ -51,7 +51,7 @@ require([
             var gridQuakes = new (declare([Grid, Selection]))({
                 bufferRows: Infinity,
                 columns: {
-                    EQUID: "ID",
+                    EQID: "ID",
                     UTC_DATETIME: {
                         "label": "Date/Time",
                         "formatter": function (dtQuake) {
@@ -81,7 +81,7 @@ require([
             });
             lyrUSA.setVisibleLayers([0, 1, 3]);
 
-            var outFieldsQuakes= ["EQUID", "UTC_DATETIME", "MAGNITUDE", "PLACE"];
+            var outFieldsQuakes= ["EQID", "UTC_DATETIME", "MAGNITUDE", "PLACE"];
 
             // Construct the Quakes layer
             var lyrQuakes = new FeatureLayer(sUrlQuakesLayer, {

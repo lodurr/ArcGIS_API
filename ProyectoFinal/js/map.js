@@ -1,14 +1,10 @@
-/*1. Consumir el siguiente MapServer con datos de EEUU: http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/
-2. Centrar la extensión de inicio del mapa.
-3. Implementar los widgets de:
-a. Leyenda
-b. Búsqueda (Search)
-c. Galería de mapas base (BaseMapGallery)
-d. Vista general (Overview)
-e. Barra de escala (ScaleBar)
+/*
+Diego Cordero
+ESRI Master 2021
 */
+
 var map;
-var tb;
+var tbDraw;
 require([
 
     "esri/map",
@@ -66,78 +62,9 @@ require([
 
         var sUrlUSAService = "http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/";
 
-        on(dojo.byId("pintaYQuery"), "click", fPintaYQuery);
-        on(dojo.byId("progButtonNode"), "click", fQueryEstados);
-
         /*
-        * Drawing Tool
-        */
-        function fPintaYQuery() {
-            //alert("Evento del botón Seleccionar ciudades");
-
-            var tbDraw = new Draw(mapMain);
-            tbDraw.on("draw-end", displayPolygon);
-            tbDraw.activate(Draw.POLYGON);
-
-        }
-        /*
-        * Drawing Tool  -- Display Polygon
-        */
-        function displayPolygon(evt) {
-
-            // Get the geometry from the event object
-            var geometryInput = evt.geometry;
-
-            // Define symbol for finished polygon
-            var tbDrawSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT, new Color([255, 255, 0]), 2), new Color([255, 255, 0, 0.2]));
-
-            // Clear the map's graphics layer
-            mapMain.graphics.clear();
-
-            /*
-             * Step: Construct and add the polygon graphic
-             */
-            var graphicPolygon = new Graphic(geometryInput, tbDrawSymbol);
-            mapMain.graphics.add(graphicPolygon);
-
-            selectCities(geometryInput);
-        }
-
-        function selectCities(geometryInput) {
-
-            // Define symbol for selected features (using JSON syntax for improved readability!)
-            var symbolSelected = new SimpleMarkerSymbol({
-                "type": "esriSMS",
-                "style": "esriSMSCircle",
-                "color": [255, 115, 0, 128],
-                "size": 6,
-                "outline": {
-                    "color": [255, 0, 0, 214],
-                    "width": 1
-                }
-            });
-            var queryQuakes = new Query();
-            queryQuakes.geometry = geometryInput;
-
-            lyrCities.setSelectionSymbol(symbolSelected);
-
-            lyrCities.selectFeatures(queryQuakes,FeatureLayer.SELECTION_NEW);
-        }
-
-
-
-        /*
-        * Go to State
-        */
-        function fQueryEstados() {
-            // alert("Evento del botón Ir a estado");
-
-        }
-
-
-        /*
-        * Extent
-        */
+                * Extent
+                */
         var extentInitial = new Extent({
             "xmin": -130.22,
             "ymin": 70.92,
@@ -173,16 +100,16 @@ require([
         });
 
         /*
-        * Mapserver
+            Mapserver
+            0 Cities
+            1 Highways
+            2 States
+            3 Counties
         */
         var lyrUSA = new ArcGISDynamicMapServiceLayer(sUrlUSAService, {
             opacity: 0.5
         });
         lyrUSA.setVisibleLayers([1, 3]);
-        /*    0 Cities
-            1 Highways
-            2 States
-            3 Counties */
 
         /*
         * Feature Layer
@@ -207,7 +134,7 @@ require([
         dijitSearch.startup();
 
         /*
-        * BaseMapGallery
+        * BaseMapGallery widget
         */
         var basemapGallery = new BasemapGallery({
             showArcGISBasemaps: true,
@@ -216,7 +143,7 @@ require([
         basemapGallery.startup();
 
         /*
-        * Overview Map
+        * Overview Map widget
         */
         var overviewMapDijit = new OverviewMap({
             map: mapMain,
@@ -257,6 +184,73 @@ require([
         scalebar.show();
 
 
+        on(dojo.byId("pintaYQuery"), "click", fPintaYQuery);
+        on(dojo.byId("progButtonNode"), "click", fQueryEstados);
+
+        /*
+        * Drawing Tool
+        */
+        function fPintaYQuery() {
+            //alert("Evento del botón Seleccionar ciudades");
+
+            tbDraw = new Draw(mapMain);
+            tbDraw.on("draw-end", displayPolygon);
+            tbDraw.activate(Draw.POLYGON);
+        }
+        /*
+        * Drawing Tool  -- Display Polygon
+        */
+        function displayPolygon(evt) {
+
+            // Get the geometry from the event object
+            var geometryInput = evt.geometry;
+
+            // Define symbol for finished polygon
+            var tbDrawSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT, new Color([255, 255, 0]), 2), new Color([255, 255, 0, 0.2]));
+
+            // Clear the map's graphics layer
+            mapMain.graphics.clear();
+
+            /*
+             * Step: Construct and add the polygon graphic
+             */
+            var graphicPolygon = new Graphic(geometryInput, tbDrawSymbol);
+            mapMain.graphics.add(graphicPolygon);
+
+            selectCities(geometryInput);
+        }
+
+        function selectCities(geometryInput) {
+
+            // Define symbol for selected features (using JSON syntax for improved readability!)
+            var symbolSelected = new SimpleMarkerSymbol({
+                "type": "esriSMS",
+                "style": "esriSMSCircle",
+                "color": [255, 115, 0, 128],
+                "size": 6,
+                "outline": {
+                    "color": [255, 0, 0, 214],
+                    "width": 1
+                }
+            });
+            var queryQuakes = new Query();
+            queryQuakes.geometry = geometryInput;
+            lyrCities.setSelectionSymbol(symbolSelected);
+            lyrCities.selectFeatures(queryQuakes, FeatureLayer.SELECTION_NEW);
+            tbDraw.deactivate();
+        }
+
+        /*
+        * Go to State
+        */
+        function fQueryEstados() {
+            // alert("Evento del botón Ir a estado");
+
+        }
+
+
+
+        
         /*
         * Load Map and Legend
         */
@@ -270,5 +264,4 @@ require([
             }, "legendDiv");
             dijitLegend.startup();
         });
-
     });

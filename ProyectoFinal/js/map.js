@@ -26,6 +26,8 @@ require([
     "esri/toolbars/draw",
     "esri/symbols/SimpleLineSymbol",
     "esri/symbols/SimpleFillSymbol",
+    "esri/symbols/SimpleMarkerSymbol",
+    "esri/tasks/query",
 
     "dojo/on",
     "dojo/dom-construct",
@@ -53,6 +55,8 @@ require([
         Draw,
         SimpleLineSymbol,
         SimpleFillSymbol,
+        SimpleMarkerSymbol,
+        Query,
 
         on,
         domConstruct,
@@ -76,7 +80,9 @@ require([
             tbDraw.activate(Draw.POLYGON);
 
         }
-
+        /*
+        * Drawing Tool  -- Display Polygon
+        */
         function displayPolygon(evt) {
 
             // Get the geometry from the event object
@@ -94,10 +100,35 @@ require([
             var graphicPolygon = new Graphic(geometryInput, tbDrawSymbol);
             mapMain.graphics.add(graphicPolygon);
 
-
-
+            selectCities(geometryInput);
         }
 
+        function selectCities(geometryInput) {
+
+            // Define symbol for selected features (using JSON syntax for improved readability!)
+            var symbolSelected = new SimpleMarkerSymbol({
+                "type": "esriSMS",
+                "style": "esriSMSCircle",
+                "color": [255, 115, 0, 128],
+                "size": 6,
+                "outline": {
+                    "color": [255, 0, 0, 214],
+                    "width": 1
+                }
+            });
+            var queryQuakes = new Query();
+            queryQuakes.geometry = geometryInput;
+
+            lyrCities.setSelectionSymbol(symbolSelected);
+
+            lyrCities.selectFeatures(queryQuakes,FeatureLayer.SELECTION_NEW);
+        }
+
+
+
+        /*
+        * Go to State
+        */
         function fQueryEstados() {
             // alert("Evento del botón Ir a estado");
 

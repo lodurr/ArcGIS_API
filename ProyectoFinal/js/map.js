@@ -22,9 +22,15 @@ require([
     "esri/dijit/Popup",
     "esri/dijit/PopupTemplate",
     "esri/layers/FeatureLayer",
+    "esri/graphic",
+    "esri/toolbars/draw",
+    "esri/symbols/SimpleLineSymbol",
+    "esri/symbols/SimpleFillSymbol",
 
     "dojo/on",
     "dojo/dom-construct",
+    "dojo/_base/Color",
+
 
     "dijit/TitlePane",
     "dijit/layout/TabContainer",
@@ -43,13 +49,61 @@ require([
         Popup,
         PopupTemplate,
         FeatureLayer,
+        Graphic,
+        Draw,
+        SimpleLineSymbol,
+        SimpleFillSymbol,
 
         on,
-        domConstruct
+        domConstruct,
+        Color
 
     ) {
 
         var sUrlUSAService = "http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/";
+
+        on(dojo.byId("pintaYQuery"), "click", fPintaYQuery);
+        on(dojo.byId("progButtonNode"), "click", fQueryEstados);
+
+        /*
+        * Drawing Tool
+        */
+        function fPintaYQuery() {
+            //alert("Evento del botón Seleccionar ciudades");
+
+            var tbDraw = new Draw(mapMain);
+            tbDraw.on("draw-end", displayPolygon);
+            tbDraw.activate(Draw.POLYGON);
+
+        }
+
+        function displayPolygon(evt) {
+
+            // Get the geometry from the event object
+            var geometryInput = evt.geometry;
+
+            // Define symbol for finished polygon
+            var tbDrawSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT, new Color([255, 255, 0]), 2), new Color([255, 255, 0, 0.2]));
+
+            // Clear the map's graphics layer
+            mapMain.graphics.clear();
+
+            /*
+             * Step: Construct and add the polygon graphic
+             */
+            var graphicPolygon = new Graphic(geometryInput, tbDrawSymbol);
+            mapMain.graphics.add(graphicPolygon);
+
+
+
+        }
+
+        function fQueryEstados() {
+            // alert("Evento del botón Ir a estado");
+
+        }
+
+
         /*
         * Extent
         */
@@ -60,6 +114,7 @@ require([
             "ymax": 76.5,
             "spatialReference": { "wkid": 4326 }
         });
+
         /*
         * PopUp
         */
@@ -70,21 +125,10 @@ require([
             title: "Estado de {STATE_NAME}, {STATE_ABBR}",
             fieldInfos: [
                 { fieldName: "POP2000", visible: true, label: "Población año 2000: " },
-                { fieldName: "POP00_SQMI",visible: true, label: "Población por sqmi: " },
+                { fieldName: "POP00_SQMI", visible: true, label: "Población por sqmi: " },
                 { fieldName: "ss6.gdb.States.area", visible: true, label: "Area por sqmi: " }
-              ]
+            ]
         });
-
-        on(dojo.byId("pintaYQuery"), "click", fPintaYQuery);
-        on(dojo.byId("progButtonNode"), "click", fQueryEstados);
-
-        function fPintaYQuery() {
-            alert("Evento del botón Seleccionar ciudades");
-        }
-
-        function fQueryEstados() {
-            alert("Evento del botón Ir a estado");
-        }
 
         /*
         * MapMain
@@ -103,20 +147,24 @@ require([
         var lyrUSA = new ArcGISDynamicMapServiceLayer(sUrlUSAService, {
             opacity: 0.5
         });
-        lyrUSA.setVisibleLayers([0, 1, 3]);
+        lyrUSA.setVisibleLayers([1, 3]);
         /*    0 Cities
             1 Highways
             2 States
             3 Counties */
 
-        var featureLayer = new FeatureLayer(sUrlUSAService + "/2", {
+        /*
+        * Feature Layer
+        */
+        var lyrStates = new FeatureLayer(sUrlUSAService + "/2", {
             mode: FeatureLayer.MODE_ONDEMAND,
             outFields: ["*"],
             infoTemplate: template
         });
+        var lyrCities = new FeatureLayer(sUrlUSAService + "/0", {
+        });
 
-
-        mapMain.addLayers([lyrUSA, featureLayer]);
+        mapMain.addLayers([lyrUSA, lyrStates, lyrCities]);
 
         /*
         * Search widget
@@ -182,6 +230,7 @@ require([
         * Load Map and Legend
         */
         mapMain.on("load", function (evt) {
+            //createToolbar();
             mapMain.resize();
             mapMain.reposition();
             var dijitLegend = new Legend({

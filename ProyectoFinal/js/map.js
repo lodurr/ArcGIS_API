@@ -63,8 +63,9 @@ require([
         var sUrlUSAService = "http://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/";
 
         /*
-                * Extent
-                */
+         * 2. Centrar la extensión de inicio del mapa.
+         * Extent
+         */
         var extentInitial = new Extent({
             "xmin": -130.22,
             "ymin": 70.92,
@@ -74,7 +75,7 @@ require([
         });
 
         /*
-        * PopUp
+        * 4. PopUp
         */
         var popup = new Popup({
         }, domConstruct.create("div"));
@@ -100,6 +101,7 @@ require([
         });
 
         /*
+            1. Consumir el siguiente MapServer con datos de EEUU:
             Mapserver
             0 Cities
             1 Highways
@@ -125,6 +127,7 @@ require([
         mapMain.addLayers([lyrUSA, lyrStates, lyrCities]);
 
         /*
+        * 3.B Widgets Busqueda
         * Search widget
         */
         var dijitSearch = new Search({
@@ -134,6 +137,7 @@ require([
         dijitSearch.startup();
 
         /*
+        * 3.C Galería de mapas base
         * BaseMapGallery widget
         */
         var basemapGallery = new BasemapGallery({
@@ -141,18 +145,6 @@ require([
             map: mapMain
         }, "basemapGallery");
         basemapGallery.startup();
-
-        /*
-        * Overview Map widget
-        */
-        var overviewMapDijit = new OverviewMap({
-            map: mapMain,
-            attachTo: "bottom-left",
-            height: 250,
-            width: 250,
-            visible: false
-        });
-        overviewMapDijit.startup();
 
         /*
         * Collapse button GalleryMap
@@ -174,6 +166,20 @@ require([
         }
 
         /*
+        * 3.D Vista general 
+        * Overview Map widget
+        */
+        var overviewMapDijit = new OverviewMap({
+            map: mapMain,
+            attachTo: "bottom-left",
+            height: 250,
+            width: 250,
+            visible: false
+        });
+        overviewMapDijit.startup();
+
+        /*
+        * 3.E Barra de escala
         * Scalebar
         */
         var scalebar = new Scalebar({
@@ -183,11 +189,9 @@ require([
         });
         scalebar.show();
 
-
         on(dojo.byId("pintaYQuery"), "click", fPintaYQuery);
-        on(dojo.byId("progButtonNode"), "click", fQueryEstados);
-
         /*
+        * 1. Consulta por medio de dibujo
         * Drawing Tool
         */
         function fPintaYQuery() {
@@ -240,7 +244,9 @@ require([
             tbDraw.deactivate();
         }
 
+        on(dojo.byId("progButtonNode"), "click", fQueryEstados);
         /*
+        * 2. Consulta por medio de boton
         * Go to State
         */
         function fQueryEstados() {
@@ -250,8 +256,9 @@ require([
 
 
 
-        
+
         /*
+        * 3.A Widgets Leyenda
         * Load Map and Legend
         */
         mapMain.on("load", function (evt) {

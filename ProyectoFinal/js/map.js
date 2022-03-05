@@ -249,12 +249,28 @@ require([
         * 2. Consulta por medio de boton
         * Go to State
         */
+
+        var highlightSymbol = new SimpleFillSymbol().setColor(new Color([50, 205, 50, 0.25]));
+        lyrStates.setSelectionSymbol(highlightSymbol);
+
+
         function fQueryEstados() {
-            // alert("Evento del botón Ir a estado");
+            var state = document.getElementById("dtb").value;
+            lyrStates.clearSelection();
+
+            //alert("Evento del botón Ir a estado " + state);
+            //statesLayer.clearSelection();
+            var query = new Query();
+            query.where = "state_name  = '" + state + "'";
+            query.returnGeometry = true;
+
+            lyrStates.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (features) {
+                //zoom to the selected feature
+                var stateExtent = features[0].geometry.getExtent().expand(5.0);
+                mapMain.setExtent(stateExtent);
+            });
 
         }
-
-
 
 
         /*

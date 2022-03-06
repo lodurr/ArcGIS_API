@@ -12,6 +12,11 @@
     top: 10px;
     right: 10px;
   }
+
+  #map_container{
+    margin-top: -70px;
+  }
+
   #mapMain {
     margin: 5px;
     border:solid 4px #224a54;

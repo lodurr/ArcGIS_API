@@ -196,7 +196,7 @@ require([
         */
         function fPintaYQuery() {
             //alert("Evento del botón Seleccionar ciudades");
-
+            mapMain.setInfoWindowOnClick(false);
             tbDraw = new Draw(mapMain);
             tbDraw.on("draw-end", displayPolygon);
             tbDraw.activate(Draw.POLYGON);
@@ -208,13 +208,10 @@ require([
 
             // Get the geometry from the event object
             var geometryInput = evt.geometry;
-
             // Define symbol for finished polygon
             var tbDrawSymbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT, new Color([255, 255, 0]), 2), new Color([255, 255, 0, 0.2]));
-
             // Clear the map's graphics layer
             mapMain.graphics.clear();
-
             /*
              * Step: Construct and add the polygon graphic
              */
@@ -242,6 +239,7 @@ require([
             lyrCities.setSelectionSymbol(symbolSelected);
             lyrCities.selectFeatures(queryQuakes, FeatureLayer.SELECTION_NEW);
             tbDraw.deactivate();
+            mapMain.setInfoWindowOnClick(true);
         }
 
         on(dojo.byId("progButtonNode"), "click", fQueryEstados);
@@ -253,15 +251,15 @@ require([
         var highlightSymbol = new SimpleFillSymbol().setColor(new Color([50, 205, 50, 0.25]));
         lyrStates.setSelectionSymbol(highlightSymbol);
 
-
         function fQueryEstados() {
             var state = document.getElementById("dtb").value;
+            stateQuery = state.toLowerCase();
+            stateQuery = stateQuery.charAt(0).toUpperCase() + stateQuery.slice(1);
             lyrStates.clearSelection();
 
-            //alert("Evento del botón Ir a estado " + state);
-            //statesLayer.clearSelection();
+            // alert("Evento del botón Ir a estado " + stateQuery);
             var query = new Query();
-            query.where = "state_name  = '" + state + "'";
+            query.where = "state_name  = '" + stateQuery + "'";
             query.returnGeometry = true;
 
             lyrStates.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (features) {
@@ -269,7 +267,6 @@ require([
                 var stateExtent = features[0].geometry.getExtent().expand(5.0);
                 mapMain.setExtent(stateExtent);
             });
-
         }
 
 

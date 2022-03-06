@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        /* Any demo specific styling needed for this tutorial only */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        #appLayout {
+            height: 100%;
+        }
+
+        #leftCol {
+            width: 14em;
+        }
+
+        .claro .demoLayout .edgePanel {
+            background-color: #d0e9fc;
+        }
+
+        #viewsChart {
+            width: 550px;
+            height: 550px;
+        }
+    </style>
+    <meta charset="utf-8">
+    <title>Demo: Layout with StackContainer</title>
+    <link rel="stylesheet" href="style.css" media="screen">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.39/dijit/themes/claro/claro.css" media="screen">
+</head>
+
+<body class="claro">
+    <div id="appLayout" class="demoLayout" data-dojo-type="dijit/layout/BorderContainer"
+        data-dojo-props="design: 'headline'">
+
+        <div class="edgePanel" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'top'">Header content
+            (top)</div>
+        <div id="leftCol" class="edgePanel" data-dojo-type="dijit/layout/ContentPane"
+            data-dojo-props="region: 'left', splitter: true">
+            Sidebar content (left)
+        </div>
+
+        <div class="edgePanel" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'">
+            <div data-dojo-type="dijit/layout/StackController" data-dojo-props="containerId:'contentStack'"></div>
+        </div>
+
+
+        <div class="centrePanel" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center'">
+            <div id="innerLayout" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="design: 'headline'">
+
+                <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
+                    Hello World
+                </div>
+
+
+                <div data-dojo-type="dijit.layout.TabContainer" data-dojo-props="region: 'center'">
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server">
+                    </asp:ContentPlaceHolder>
+                </div>
+
+            </div>
+        </div>
+        <!-- load dojo -->
+        <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js"></script>
+        <script>
+            require(["dojo/parser", "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
+                "dijit/layout/StackContainer", "dijit/layout/StackController", "dojo/domReady!"], function (parser) {
+                    parser.parse();
+                });
+        </script>
+</body>
+
+</html>

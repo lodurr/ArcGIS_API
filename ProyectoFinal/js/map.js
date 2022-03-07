@@ -234,10 +234,10 @@ require([
                     "width": 1
                 }
             });
-            var queryQuakes = new Query();
-            queryQuakes.geometry = geometryInput;
+            var queryCities = new Query();
+            queryCities.geometry = geometryInput;
             lyrCities.setSelectionSymbol(symbolSelected);
-            lyrCities.selectFeatures(queryQuakes, FeatureLayer.SELECTION_NEW);
+            lyrCities.selectFeatures(queryCities, FeatureLayer.SELECTION_NEW);
             tbDraw.deactivate();
             mapMain.setInfoWindowOnClick(true);
         }
